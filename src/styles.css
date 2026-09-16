@@ -158,7 +158,7 @@
   position: relative;
   min-height: 100vh;
   min-height: 100dvh;
-  overflow: hidden;
+  overflow-x: hidden;
   background: var(--panel);
   color: var(--ink);
   font-family: "PJS", "Plus Jakarta Sans", system-ui, sans-serif;
@@ -168,7 +168,7 @@
   .sellix { --u: min(calc(100vw / 1280), calc(100dvh / 760)); }
 }
 
-.sellix-bg { position: absolute; inset: 0; z-index: 0; }
+.sellix-bg { position: fixed; inset: 0; z-index: 0; }
 .sellix-bg video {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
@@ -178,9 +178,9 @@
 #bgVideoA { opacity: 1; }
 #bgVideoB { opacity: 0; }
 .sellix-scrim {
-  position: absolute; inset: 0; z-index: 1;
+  position: fixed; inset: 0; z-index: 1;
   background:
-    linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.18) 34%, rgba(0,0,0,.62) 100%);
+    linear-gradient(180deg, rgba(0,0,0,.62) 0%, rgba(0,0,0,.3) 34%, rgba(0,0,0,.72) 100%);
 }
 
 .sellix-shell {
@@ -188,6 +188,7 @@
   display: flex; flex-direction: column;
   min-height: 100vh; min-height: 100dvh;
 }
+
 
 /* nav */
 .sx-nav {

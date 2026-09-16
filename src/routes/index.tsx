@@ -24,12 +24,6 @@ export const Route = createFileRoute("/")({
       { property: "og:image", content: POSTER },
       { name: "twitter:image", content: POSTER },
     ],
-    scripts: [
-      {
-        children:
-          "try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('anim')}}catch(e){}",
-      },
-    ],
   }),
   component: Index,
 });
@@ -50,6 +44,7 @@ function Index() {
   const aRef = useRef<HTMLVideoElement>(null);
   const bRef = useRef<HTMLVideoElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [animClass, setAnimClass] = useState("anim");
 
   // Seamless loop: cross-fade between the two stacked videos at the loop point.
   useEffect(() => {
@@ -76,7 +71,7 @@ function Index() {
       if (!swapping && d - front.currentTime <= FADE) {
         swapping = true;
         back.currentTime = 0;
-        void back.play();
+        void back.play().catch(() => {});
         back.style.opacity = "1";
         front.style.opacity = "0";
         window.setTimeout(() => {
@@ -91,7 +86,7 @@ function Index() {
 
     a.addEventListener("timeupdate", onTime);
     b.addEventListener("timeupdate", onTime);
-    void a.play();
+    void a.play().catch(() => {});
     return () => {
       a.removeEventListener("timeupdate", onTime);
       b.removeEventListener("timeupdate", onTime);
@@ -100,21 +95,24 @@ function Index() {
 
   // Entrance sequence: run once fonts are ready, then clean up.
   useEffect(() => {
-    const root = document.documentElement;
-    if (!root.classList.contains("anim")) return;
     let done = false;
+    let timer = 0;
     const cleanup = () => {
       if (done) return;
       done = true;
-      root.classList.remove("anim", "run");
+      window.clearTimeout(timer);
+      setAnimClass("");
     };
     const start = () => {
-      root.classList.add("run");
+      if (done) return;
+      setAnimClass("anim run");
       const last = document.querySelector<HTMLElement>(".sx-cta");
       last?.addEventListener("animationend", cleanup, { once: true });
-      window.setTimeout(cleanup, 3000);
+      timer = window.setTimeout(cleanup, 3000);
     };
-    if (document.fonts?.ready) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      cleanup();
+    } else if (document.fonts?.ready) {
       void document.fonts.ready.then(start);
     } else {
       start();
@@ -123,7 +121,7 @@ function Index() {
   }, []);
 
   return (
-    <main className="sellix">
+    <main className={`sellix ${animClass}`.trim()}>
       <div className="sellix-bg">
         <video id="bgVideoA" ref={aRef} src={VIDEO_SRC} poster={POSTER} autoPlay muted loop playsInline />
         <video id="bgVideoB" ref={bRef} src={VIDEO_SRC} poster={POSTER} muted loop playsInline />

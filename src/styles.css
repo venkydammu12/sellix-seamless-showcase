@@ -679,3 +679,7 @@
     animation: none !important;
   }
 }
+
+/* button polish */
+.sx-btn { white-space: nowrap; }
+.sx-btn svg { width: calc(var(--u) * 13); height: calc(var(--u) * 13); flex: none; }

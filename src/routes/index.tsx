@@ -212,9 +212,10 @@ function Index() {
             <button type="button" className="sx-btn sx-btn-red" onClick={ll.openEmergency}>
               🚨 Start Emergency <ArrowIcon />
             </button>
-            <button type="button" className="sx-btn sx-btn-ghost" onClick={ll.openDashboard}>
+            <a className="sx-btn sx-btn-ghost" href="#how">
               See How It Works <ArrowIcon />
-            </button>
+            </a>
+
             <button type="button" className="sx-btn sx-btn-ghost" onClick={ll.runQuickDemo}>
               ⚡ Quick Demo
             </button>

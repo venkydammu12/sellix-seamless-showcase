@@ -1,16 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { EmergencyMode } from "@/components/lifelink/EmergencyMode";
+import { HospitalCommand } from "@/components/lifelink/HospitalCommand";
+import { Sections } from "@/components/lifelink/Sections";
+import { LifeLinkProvider, useLifeLink } from "@/lib/lifelink-store";
 
 const VIDEO_SRC =
   "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_104036_bd6924f6-3c8e-417e-8465-6d03c8c2e9e6.mp4";
 const POSTER =
   "https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/82e7eb75-c65f-490a-99b5-f3d1cad54200.webp";
 
-const NAV_LINKS = ["Products", "Pricing", "Developers", "Resources", "Contact Sales"];
+const NAV_LINKS: { label: string; href: string }[] = [
+  { label: "Emergency", href: "#voice" },
+  { label: "How It Works", href: "#how" },
+  { label: "Hospitals", href: "#hospitals" },
+  { label: "For Hospitals", href: "#for-hospitals" },
+  { label: "About", href: "#about" },
+];
 
-const TITLE = "Sellix — Cross-border finance";
+const TITLE = "LIFE-LINK — The hospital knows before you arrive";
 const DESCRIPTION =
-  "Sellix moves money across borders for modern businesses: one account, local rails in 40+ markets, and settlement that clears in hours, not days.";
+  "LIFE-LINK helps patients, families, bystanders and emergency teams share critical information with participating hospitals before arrival — using voice, simple questions and their own language.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -25,7 +35,7 @@ export const Route = createFileRoute("/")({
       { name: "twitter:image", content: POSTER },
     ],
   }),
-  component: Index,
+  component: IndexPage,
 });
 
 const ArrowIcon = () => (
@@ -40,11 +50,34 @@ const ArrowIcon = () => (
   </svg>
 );
 
+const PulseMark = () => (
+  <span className="ll-mark" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path
+        d="M2 12h4l2-5 3 10 3-7 2 2h6"
+        stroke="currentColor"
+        strokeWidth="1.9"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  </span>
+);
+
+function IndexPage() {
+  return (
+    <LifeLinkProvider>
+      <Index />
+    </LifeLinkProvider>
+  );
+}
+
 function Index() {
   const aRef = useRef<HTMLVideoElement>(null);
   const bRef = useRef<HTMLVideoElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [animClass, setAnimClass] = useState("anim");
+  const ll = useLifeLink();
 
   // Seamless loop: cross-fade between the two stacked videos at the loop point.
   useEffect(() => {
@@ -130,21 +163,24 @@ function Index() {
 
       <div className="sellix-shell">
         <nav className="sx-nav">
-          <span className="sx-logo">Sellix</span>
+          <span className="sx-logo">
+            <PulseMark />
+            LIFE-LINK
+          </span>
           <div className="sx-links">
             {NAV_LINKS.map((l) => (
-              <a key={l} href="#">
-                {l}
+              <a key={l.label} href={l.href}>
+                {l.label}
               </a>
             ))}
           </div>
           <div className="sx-nav-actions">
-            <a className="sx-btn sx-btn-ghost" href="#">
-              Login
-            </a>
-            <a className="sx-btn sx-btn-white" href="#">
-              Get Started <ArrowIcon />
-            </a>
+            <button type="button" className="sx-btn sx-btn-ghost" onClick={ll.openDashboard}>
+              Hospital Login
+            </button>
+            <button type="button" className="sx-btn sx-btn-red" onClick={ll.openEmergency}>
+              🚨 Start Emergency <ArrowIcon />
+            </button>
           </div>
           <button
             className="sx-burger"
@@ -158,35 +194,48 @@ function Index() {
         </nav>
 
         <div className="sx-hero">
+          <span className="ll-eyebrow">EMERGENCY RESPONSE, REIMAGINED</span>
           <h1>
             <span className="ln">
-              <span className="ln-i">Cross-border</span>
+              <span className="ln-i">The hospital</span>
             </span>
             <span className="ln">
-              <span className="ln-i">finance</span>
+              <span className="ln-i">knows before you arrive.</span>
             </span>
           </h1>
           <p className="sx-sub">
-            One account for every market you sell into.
-            <br />
-            Collect, convert and pay out on local rails in 40+ countries.
-            <br />
-            Settlement in hours — with mid-market rates and no hidden spread.
+            LIFE-LINK helps patients, families, bystanders and emergency teams share critical
+            information with participating hospitals before arrival — using voice, simple questions
+            and the language they understand.
           </p>
           <div className="sx-cta">
-            <a className="sx-btn sx-btn-white" href="#">
-              Get Started <ArrowIcon />
+            <button type="button" className="sx-btn sx-btn-red" onClick={ll.openEmergency}>
+              🚨 Start Emergency <ArrowIcon />
+            </button>
+            <a className="sx-btn sx-btn-ghost" href="#how">
+              See How It Works <ArrowIcon />
             </a>
-            <a className="sx-btn sx-btn-ghost" href="#">
-              Contact Sales
-            </a>
+
+            <button type="button" className="sx-btn sx-btn-ghost" onClick={ll.runQuickDemo}>
+              ⚡ Quick Demo
+            </button>
           </div>
+          <p className="ll-safety">
+            If someone is in immediate danger, contact local emergency services and seek emergency
+            medical care immediately. LIFE-LINK helps coordinate information and does not replace
+            emergency medical care.
+          </p>
         </div>
       </div>
 
+      <Sections />
+
       <div className={`sx-drawer${menuOpen ? " open" : ""}`}>
         <div className="sx-drawer-top">
-          <span className="sx-logo">Sellix</span>
+          <span className="sx-logo">
+            <PulseMark />
+            LIFE-LINK
+          </span>
           <button
             className="sx-drawer-close"
             type="button"
@@ -198,20 +247,37 @@ function Index() {
         </div>
         <div className="sx-drawer-links">
           {NAV_LINKS.map((l) => (
-            <a key={l} href="#" onClick={() => setMenuOpen(false)}>
-              {l}
+            <a key={l.label} href={l.href} onClick={() => setMenuOpen(false)}>
+              {l.label}
             </a>
           ))}
         </div>
         <div className="sx-drawer-actions">
-          <a className="sx-btn sx-btn-white" href="#">
-            Get Started <ArrowIcon />
-          </a>
-          <a className="sx-btn sx-btn-ghost" href="#">
-            Login
-          </a>
+          <button
+            type="button"
+            className="sx-btn sx-btn-red"
+            onClick={() => {
+              setMenuOpen(false);
+              ll.openEmergency();
+            }}
+          >
+            🚨 Start Emergency <ArrowIcon />
+          </button>
+          <button
+            type="button"
+            className="sx-btn sx-btn-ghost"
+            onClick={() => {
+              setMenuOpen(false);
+              ll.openDashboard();
+            }}
+          >
+            Hospital Login
+          </button>
         </div>
       </div>
+
+      <EmergencyMode />
+      <HospitalCommand />
     </main>
   );
 }

@@ -193,7 +193,10 @@ export function LifeLinkProvider({ children }: { children: ReactNode }) {
       updateCase((d) => ({
         ...d,
         mode,
-        answers: { ...d.answers, patientKnown: mode === "bystander" ? "no" : d.answers.patientKnown },
+        answers:
+          mode === "bystander"
+            ? { ...d.answers, patientKnown: "no" }
+            : Object.fromEntries(Object.entries(d.answers).filter(([key]) => key !== "patientKnown")) as Answers,
         patientRelationship: mode === "bystander" ? "bystander" : d.patientRelationship,
       })),
     [updateCase],

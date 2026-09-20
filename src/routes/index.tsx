@@ -179,7 +179,7 @@ function Index() {
               Hospital Login
             </button>
             <button type="button" className="sx-btn sx-btn-red" onClick={ll.openEmergency}>
-              🚨 Start Emergency <ArrowIcon />
+              Start Emergency <ArrowIcon />
             </button>
           </div>
           <button
@@ -210,14 +210,14 @@ function Index() {
           </p>
           <div className="sx-cta">
             <button type="button" className="sx-btn sx-btn-red" onClick={ll.openEmergency}>
-              🚨 Start Emergency <ArrowIcon />
+              Start Emergency <ArrowIcon />
             </button>
             <a className="sx-btn sx-btn-ghost" href="#how">
               See How It Works <ArrowIcon />
             </a>
 
             <button type="button" className="sx-btn sx-btn-ghost" onClick={ll.runQuickDemo}>
-              ⚡ Quick Demo
+              Run Judge Demo
             </button>
           </div>
           <p className="ll-safety">
@@ -261,7 +261,7 @@ function Index() {
               ll.openEmergency();
             }}
           >
-            🚨 Start Emergency <ArrowIcon />
+            Start Emergency <ArrowIcon />
           </button>
           <button
             type="button"
